@@ -32,6 +32,8 @@ def main():
             f"{job['title']} | "
             f"{job['company']} | "
             f"{job['posted_date']}"
+            f"{job['location']}"
+            f"{job['salary']}"
         )
 
     print("\n...")
@@ -48,6 +50,8 @@ def main():
             f"{job['title']} | "
             f"{job['company']} | "
             f"{job['posted_date']}"
+            f"{job['location']}"
+            f"{job['salary']}"
         )
     
     pprint(jobs[0])

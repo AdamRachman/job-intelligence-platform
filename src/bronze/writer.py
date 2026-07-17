@@ -1,0 +1,90 @@
+import pandas as pd
+
+from src.bronze.iceberg_schema import build_bronze_schema
+from src.iceberg.arrow import dataframe_to_arrow
+from src.utils.incremental import filter_incremental
+
+BUSINESS_KEYS = [
+    "source",
+    "job_id"
+]
+
+def enforce_schema(df):
+
+    columns = [
+        "source",
+        "job_id",
+        "detail_url",
+        "title",
+        "company",
+        "location",
+        "posted_date",
+        "employment_type",
+        "salary",
+        "classification",
+        "sub_classification",
+        "seniority_level",
+        "job_function",
+        "industry",
+        "short_description",
+        "job_description",
+        "scraped_at",
+    ]
+
+
+    for col in columns:
+
+        if col in df.columns:
+            df[col] = df[col].astype("string")
+
+
+    return df
+
+
+def append_to_bronze(table, records):
+
+
+    # 1. Convert records to dataframe
+
+    df = pd.DataFrame(records)
+
+
+    # 2. Incremental load with business key
+
+    new_df = filter_incremental(
+        df=df,
+        table=table,
+        business_keys=BUSINESS_KEYS,
+    )
+
+
+    new_df = enforce_schema(new_df)
+
+
+    print(f"New records : {len(new_df)}")
+
+
+    if new_df.empty:
+
+        print("Nothing to insert.")
+
+        return
+
+
+
+    # 5. Pandas -> PyArrow
+
+    arrow_table = dataframe_to_arrow(
+        new_df,
+        build_bronze_schema(),
+    )
+
+
+    # 6. Append Iceberg
+
+    table.append(
+        arrow_table
+    )
+
+
+    print("Bronze ingestion completed.")

@@ -5,9 +5,9 @@ from src.pipeline.ingestion import run_ingestion
 # CONFIG
 # ==========================================================
 
-KEYWORD = "Data Engineer"
+KEYWORD = "Junior Data AI Engineer Scientist"
 
-MAX_RESULTS = 5
+MAX_RESULTS = 25
 
 
 # ==========================================================

@@ -63,8 +63,9 @@ def extract_search_metadata(job_card):
     # =====================================
 
     location = job_card.find(
-        "a",
-        attrs={"data-automation": "jobLocation"}
+        attrs={
+            "data-automation": "jobLocation"
+        }
     )
 
     job["location"] = get_text(location)

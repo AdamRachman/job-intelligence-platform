@@ -1,4 +1,4 @@
-from src.schema.job_schema import create_job
+from src.schema.bronze_job_schema import create_job
 from src.jobstreet.search_parser import extract_search_metadata
 from src.jobstreet.detail_parser import extract_detail_metadata
 from src.connector.base_connector import BaseConnector

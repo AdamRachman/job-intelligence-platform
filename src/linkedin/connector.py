@@ -1,5 +1,5 @@
 from src.connector.base_connector import BaseConnector
-from src.schema.job_schema import create_job
+from src.schema.bronze_job_schema import create_job
 from src.linkedin.search_parser import extract_search_metadata
 from src.linkedin.detail_parser import extract_detail_metadata
 
