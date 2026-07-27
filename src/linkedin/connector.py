@@ -2,7 +2,8 @@ from src.connector.base_connector import BaseConnector
 from src.schema.bronze_job_schema import create_job
 from src.linkedin.search_parser import extract_search_metadata
 from src.linkedin.detail_parser import extract_detail_metadata
-
+import time
+import random
 class LinkedInConnector(BaseConnector):
 
     BASE_URL = "https://www.linkedin.com"
@@ -103,6 +104,10 @@ class LinkedInConnector(BaseConnector):
 
     def fetch_detail_page(self, job_id):
 
+        time.sleep(
+            random.uniform(1, 3)
+        )
+        
         detail_url = (
             f"{self.BASE_URL}"
             f"{self.DETAIL_ENDPOINT}"
@@ -128,6 +133,8 @@ class LinkedInConnector(BaseConnector):
         search_data = self.parse_search_metadata(
             job_card
         )
+
+        self.random_delay()
 
         soup = self.fetch_detail_page(
             search_data["job_id"]
@@ -210,7 +217,6 @@ class LinkedInConnector(BaseConnector):
                 if len(jobs) >= max_results:
                     break
 
-                self.random_delay()
 
             start += len(cards)
 

@@ -1,7 +1,7 @@
 from src.linkedin.connector import LinkedInConnector
 
 
-KEYWORD = "Data AI Engineer"
+KEYWORD = "Junior Data AI Engineer Scientist"
 
 
 def main():
@@ -22,7 +22,7 @@ def main():
     if not jobs:
 
         print("No jobs found.")
-        return
+        exit(1)
 
     print("\nFirst 5 Jobs")
     print("-" * 60)

@@ -1,28 +1,33 @@
 from src.pipeline.ingestion import run_ingestion
 
 
-# ==========================================================
-# CONFIG
-# ==========================================================
+KEYWORDS = [
+    "Junior Data Engineer",
+    "Junior Data Scientist",
+    "AI Engineer",
+    "IT Support"
+]
 
-KEYWORD = "Junior Data AI Engineer Scientist"
-
-MAX_RESULTS = 25
+MAX_RESULTS = 10
 
 
-# ==========================================================
-# MAIN
-# ==========================================================
 
-if __name__ == "__main__":
+def main():
 
     jobs = run_ingestion(
-        keyword=KEYWORD,
+        keywords=KEYWORDS,
         max_results=MAX_RESULTS
     )
 
-    print()
+
+    print() 
 
     print("=" * 60)
     print(f"TOTAL JOBS : {len(jobs)}")
     print("=" * 60)
+
+
+
+if __name__ == "__main__":
+
+    main()

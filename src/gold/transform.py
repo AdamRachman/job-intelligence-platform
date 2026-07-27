@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 from src.ai.enrich import enrich_job
+import time
 
 WFH_KEYWORDS = [
 
@@ -109,6 +110,9 @@ def transform(df):
             continue
 
 
+        time.sleep(3)
+
+
         result = enrich_job(
 
             title=row["title"],
@@ -116,7 +120,7 @@ def transform(df):
             description=row["job_description_clean"],
 
         )
-        # time.sleep(20)
+
 
         if is_empty(row["seniority_level"]):
 

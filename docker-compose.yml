@@ -94,5 +94,81 @@ services:
     networks:
       - iceberg_net
 
+  airflow-postgres:
+    image: postgres:13
+    container_name: airflow-postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow-postgres-volume:/var/lib/postgresql/data
+    networks:
+      - iceberg_net
+
+  airflow-webserver:
+    build: .
+    container_name: airflow-webserver
+    depends_on:
+      - airflow-postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      PYTHONPATH: /opt/airflow
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      ICEBERG_URI: http://iceberg-rest:8181
+      S3_ENDPOINT: http://minio:9000
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./logs:/opt/airflow/logs
+    ports:
+      - "8081:8080"
+    command: webserver
+    networks:
+      - iceberg_net
+
+  airflow-scheduler:
+    build: .
+    container_name: airflow-scheduler
+    depends_on:
+      - airflow-postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+      PYTHONPATH: /opt/airflow
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      ICEBERG_URI: http://iceberg-rest:8181
+      S3_ENDPOINT: http://minio:9000
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./logs:/opt/airflow/logs
+    command: scheduler
+    networks:
+      - iceberg_net
+
+  airflow-init:
+    build: .
+
+    container_name: airflow-init
+
+    depends_on:
+      - airflow-postgres
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      ICEBERG_URI: http://iceberg-rest:8181
+      S3_ENDPOINT: http://minio:9000
+    command: db migrate
+
+    networks:
+      - iceberg_net
+
 networks:
   iceberg_net:
+
+volumes:
+  airflow-postgres-volume:
