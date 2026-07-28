@@ -86,6 +86,8 @@ services:
       - ./docker/trino/node.properties:/etc/trino/node.properties
       - ./docker/trino/jvm.config:/etc/trino/jvm.config
       - ./docker/trino/catalog:/etc/trino/catalog
+      - ./docker/trino/password-authenticator.properties:/etc/trino/password-authenticator.properties
+      - ./docker/trino/password.db:/etc/trino/password.db
 
     depends_on:
       rest:
@@ -95,7 +97,7 @@ services:
       - iceberg_net
 
   airflow-postgres:
-    image: postgres:13
+    image: postgres:15
     container_name: airflow-postgres
     environment:
       POSTGRES_USER: airflow
@@ -164,6 +166,23 @@ services:
       S3_ENDPOINT: http://minio:9000
     command: db migrate
 
+    networks:
+      - iceberg_net
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: airflow
+      MB_DB_PASS: airflow
+      MB_DB_HOST: airflow-postgres
+    depends_on:
+      - airflow-postgres
     networks:
       - iceberg_net
 
