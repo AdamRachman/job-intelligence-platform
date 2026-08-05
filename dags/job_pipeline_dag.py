@@ -19,6 +19,36 @@ default_args = {
     "retries": 1,
 }
 
+def send_ntfy_notification(**context):
+
+    ti = context["ti"]
+
+    jobs = ti.xcom_pull(
+        task_ids="gold_enrichment"
+    )
+
+
+    if not jobs:
+
+        print(
+            "No new jobs for notification."
+        )
+
+        return
+
+
+    from src.notification.service import (
+        send_job_notifications
+    )
+
+    print(
+        f"Jobs received from Gold: {len(jobs)}"
+    )
+
+    send_job_notifications(
+        jobs
+    )
+
 
 with DAG(
     dag_id="job_intelligence_pipeline",
@@ -49,6 +79,7 @@ with DAG(
     gold_task = PythonOperator(
         task_id="gold_enrichment",
         python_callable=gold_loader,
+        show_return_value_in_logs=False,
     )
 
 
@@ -57,5 +88,11 @@ with DAG(
         python_callable=sync_gold_to_sheet,
     )
 
+    ntfy_task = PythonOperator(
+        task_id="send_ntfy_notification",
+        python_callable=send_ntfy_notification,
+    )
 
-    scrape_task >> bronze_task >> silver_task >> gold_task >> sync_sheet_task
+    scrape_task >> bronze_task >> silver_task >> gold_task
+    gold_task >> sync_sheet_task
+    gold_task >> ntfy_task

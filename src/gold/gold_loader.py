@@ -61,7 +61,7 @@ def main():
             f"Total Gold Records   : {get_table_count(gold)}"
         )
 
-        return
+        return []
 
 
 
@@ -92,7 +92,7 @@ def main():
             f"Total Gold Records   : {get_table_count(gold)}"
         )
 
-        return
+        return []
 
 
 
@@ -141,6 +141,7 @@ def main():
         f"Total Gold Records   : {total_records}"
     )
 
+    return df.to_dict("records")
 
 if __name__ == "__main__":
 

@@ -65,3 +65,24 @@ TRINO_SCHEMA = os.getenv(
     "TRINO_SCHEMA",
     "gold",
 )
+
+# ======================
+# ntfy
+# ======================
+
+NTFY_BASE_URL = os.getenv(
+    "NTFY_BASE_URL",
+    "http://ntfy:80"
+)
+
+NTFY_TOPIC = os.getenv(
+    "NTFY_TOPIC",
+    "job-intelligence-adam"
+)
+
+NTFY_TIMEOUT = int(
+    os.getenv(
+        "NTFY_TIMEOUT",
+        "10"
+    )
+)

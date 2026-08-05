@@ -1,12 +1,13 @@
 from src.pipeline.ingestion import run_ingestion
 
-#GANTI KEYWORDS
+#UBAH KEYWORDS PENCARIAN
 KEYWORDS = [
     "Junior Data Engineer",
     "Junior Data Scientist",
     "Machine Learning AI Engineer",
 ]
 
+# UBAH JUMLAH DATA PER PENCARIAN
 MAX_RESULTS = 10
 
 
