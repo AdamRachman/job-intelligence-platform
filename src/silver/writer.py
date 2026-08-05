@@ -10,7 +10,14 @@ BUSINESS_KEYS = [
 ]
 
 
+def get_table_count(table):
+
+    return table.scan().count()
+
+
+
 def append_to_silver(table, df):
+
 
     new_df = filter_incremental(
         df=df,
@@ -18,21 +25,56 @@ def append_to_silver(table, df):
         business_keys=BUSINESS_KEYS,
     )
 
-    print(f"New records : {len(new_df)}")
+
+    print(
+        f"New Silver Records   : {len(new_df)}"
+    )
+
+
 
     if new_df.empty:
 
-        print("Nothing to insert.")
+        total_records = get_table_count(
+            table
+        )
+
+        print(
+            "Nothing to insert."
+        )
+
+        print(
+            f"Total Silver Records : {total_records}"
+        )
 
         return
 
-    new_df = enforce_schema(new_df)
+
+
+    new_df = enforce_schema(
+        new_df
+    )
+
 
     arrow_table = dataframe_to_arrow(
         new_df,
         build_silver_schema(),
     )
 
-    table.append(arrow_table)
 
-    print("Silver ingestion completed.")
+    table.append(
+        arrow_table
+    )
+
+
+    total_records = get_table_count(
+        table
+    )
+
+
+    print(
+        "Silver ingestion completed."
+    )
+
+    print(
+        f"Total Silver Records : {total_records}"
+    )

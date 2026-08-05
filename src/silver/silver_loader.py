@@ -3,6 +3,9 @@ from src.silver.table import get_or_create_table as get_silver_table
 from src.silver.transform import transform
 from src.silver.writer import append_to_silver
 
+def get_table_count(table):
+
+    return table.scan().count()
 
 def main():
 
@@ -18,13 +21,11 @@ def main():
 
     print()
 
-    print("Reading Bronze...")
-
     arrow = bronze.scan().to_arrow()
 
     df = arrow.to_pandas()
 
-    print(f"Bronze records : {len(df)}")
+    print(f"Input Bronze records : {len(df)}")
 
     if df.empty:
 

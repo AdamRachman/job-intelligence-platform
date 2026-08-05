@@ -40,6 +40,14 @@ def enforce_schema(df):
 
     return df
 
+def get_table_count(table):
+
+    return (
+        table
+        .scan()
+        .to_arrow()
+        .num_rows
+    )
 
 def append_to_bronze(table, records):
 
@@ -47,6 +55,9 @@ def append_to_bronze(table, records):
     # 1. Convert records to dataframe
 
     df = pd.DataFrame(records)
+
+
+
 
 
     # 2. Incremental load with business key
@@ -58,21 +69,39 @@ def append_to_bronze(table, records):
     )
 
 
-    new_df = enforce_schema(new_df)
+    print(
+        f"New Bronze Records   : {len(new_df)}"
+    )
 
-
-    print(f"New records : {len(new_df)}")
 
 
     if new_df.empty:
 
-        print("Nothing to insert.")
+        total_records = get_table_count(
+            table
+        )
+
+        print(
+            "Nothing to insert."
+        )
+
+        print(
+            f"Total Bronze Records: {total_records}"
+        )
 
         return
 
 
 
-    # 5. Pandas -> PyArrow
+    # 3. Schema enforcement
+
+    new_df = enforce_schema(
+        new_df
+    )
+
+
+
+    # 4. Pandas -> PyArrow
 
     arrow_table = dataframe_to_arrow(
         new_df,
@@ -80,11 +109,23 @@ def append_to_bronze(table, records):
     )
 
 
-    # 6. Append Iceberg
+
+    # 5. Append Iceberg
 
     table.append(
         arrow_table
     )
 
 
-    print("Bronze ingestion completed.")
+    total_records = get_table_count(
+        table
+    )
+
+
+    print(
+        "Bronze ingestion completed."
+    )
+
+    print(
+        f"Total Bronze Records: {total_records}"
+    )

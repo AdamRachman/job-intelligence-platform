@@ -109,8 +109,8 @@ def transform(df):
 
             continue
 
-
-        time.sleep(3)
+        #Time sleep per request
+        time.sleep(5)
 
 
         result = enrich_job(

@@ -22,7 +22,7 @@ services:
       - CATALOG_S3_ENDPOINT=http://minio:9000
 
       # Persist SQLite Catalog
-      - uri=jdbc:sqlite:/catalog/iceberg_catalog.db
+      - CATALOG_URI=jdbc:sqlite:/catalog/iceberg_catalog.db
 
   minio:
     image: minio/minio
@@ -117,14 +117,23 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
       PYTHONPATH: /opt/airflow
+
       GROQ_API_KEY: ${GROQ_API_KEY}
+
       ICEBERG_URI: http://iceberg-rest:8181
       S3_ENDPOINT: http://minio:9000
+
+      TRINO_HOST: trino
+      TRINO_PORT: 8080
+      TRINO_USER: job_intelligence
+
     volumes:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./logs:/opt/airflow/logs
+      - ./credentials:/opt/airflow/credentials
     ports:
       - "8081:8080"
     command: webserver
@@ -136,17 +145,27 @@ services:
     container_name: airflow-scheduler
     depends_on:
       - airflow-postgres
+
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+
       PYTHONPATH: /opt/airflow
+
       GROQ_API_KEY: ${GROQ_API_KEY}
+
       ICEBERG_URI: http://iceberg-rest:8181
       S3_ENDPOINT: http://minio:9000
+
+      TRINO_HOST: trino
+      TRINO_PORT: 8080
+      TRINO_USER: job_intelligence
+
     volumes:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./logs:/opt/airflow/logs
+      - ./credentials:/opt/airflow/credentials
     command: scheduler
     networks:
       - iceberg_net

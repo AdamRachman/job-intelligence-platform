@@ -18,33 +18,56 @@ BUSINESS_KEYS = [
 ]
 
 
+def get_table_count(table):
+
+    return table.scan().count()
+
+
+
 def main():
 
     print("=" * 60)
     print("GOLD ENRICHMENT")
     print("=" * 60)
 
+
     silver = get_silver_table()
 
     gold = get_gold_table()
+
+
 
     print()
 
     print("Reading Silver...")
 
+
     df = silver.scan().to_arrow().to_pandas()
 
-    print(f"Silver records : {len(df)}")
+
+    print(
+        f"Input Silver Records  : {len(df)}"
+    )
+
+
 
     if df.empty:
 
-        print("Nothing to process.")
+        print(
+            "Nothing to process."
+        )
+
+        print(
+            f"Total Gold Records   : {get_table_count(gold)}"
+        )
 
         return
 
-    print("Business Enrichment...")
 
-    df = transform(df)
+
+    # ======================================================
+    # Incremental Filtering BEFORE AI Enrichment
+    # ======================================================
 
     df = filter_incremental(
         df=df,
@@ -52,25 +75,71 @@ def main():
         business_keys=BUSINESS_KEYS,
     )
 
-    print(f"New records : {len(df)}")
+
+    print(
+        f"New Gold Records     : {len(df)}"
+    )
+
+
 
     if df.empty:
 
-        print("Nothing to insert.")
+        print(
+            "Nothing to enrich."
+        )
+
+        print(
+            f"Total Gold Records   : {get_table_count(gold)}"
+        )
 
         return
 
-    df = enforce_schema(df)
+
+
+    print(
+        "Business Enrichment..."
+    )
+
+
+    df = transform(
+        df
+    )
+
+
+
+    df = enforce_schema(
+        df
+    )
+
+
 
     arrow_table = dataframe_to_arrow(
         df,
         build_gold_schema(),
     )
 
-    gold.append(arrow_table)
+
+    gold.append(
+        arrow_table
+    )
+
+
+
+    total_records = get_table_count(
+        gold
+    )
+
+
 
     print()
-    print("Gold enrichment completed.")
+
+    print(
+        "Gold enrichment completed."
+    )
+
+    print(
+        f"Total Gold Records   : {total_records}"
+    )
 
 
 if __name__ == "__main__":

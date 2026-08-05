@@ -1,11 +1,10 @@
 from src.pipeline.ingestion import run_ingestion
 
-
+#GANTI KEYWORDS
 KEYWORDS = [
     "Junior Data Engineer",
     "Junior Data Scientist",
-    "AI Engineer",
-    "IT Support"
+    "Machine Learning AI Engineer",
 ]
 
 MAX_RESULTS = 10

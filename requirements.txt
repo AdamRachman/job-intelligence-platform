@@ -17,3 +17,7 @@ langchain-groq
 groq
 
 pydantic
+
+trino
+gspread
+google-auth

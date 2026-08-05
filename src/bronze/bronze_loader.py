@@ -19,7 +19,7 @@ def main():
 
     print()
 
-    print(f"Processed Raw Records : {len(records)}")
+    print(f"Input Raw Records : {len(records)}")
 
 
     if not records:
