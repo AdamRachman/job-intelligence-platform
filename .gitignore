@@ -84,10 +84,11 @@ logs/
 minio_data/
 
 # ==================================
-# MinIO Runtime Data
+# MinIO Runtime Data and Local Data
 # ==================================
 
 docker/minio/data/
+data/raw/
 
 # ==========================================================
 # Temporary Files
