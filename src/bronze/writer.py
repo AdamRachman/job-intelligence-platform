@@ -55,7 +55,11 @@ def append_to_bronze(table, records):
     # 1. Convert records to dataframe
 
     df = pd.DataFrame(records)
-
+    # Remove duplicates generated from multi-keyword scraping
+    df = df.drop_duplicates(
+        subset=BUSINESS_KEYS,
+        keep="first",
+    )
 
 
 

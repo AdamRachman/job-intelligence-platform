@@ -54,7 +54,7 @@ with DAG(
     dag_id="job_intelligence_pipeline",
     default_args=default_args,
     start_date=datetime(2026, 7, 24),
-    schedule="0 8,16 * * *",
+    schedule="0 1,9 * * *",
     catchup=False,
 ) as dag:
 

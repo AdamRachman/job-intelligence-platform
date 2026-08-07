@@ -96,3 +96,6 @@ data/raw/
 
 *.tmp
 *.bak
+
+# Iceberg catalog
+docker/iceberg/catalog/*.db
